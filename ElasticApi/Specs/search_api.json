@@ -1,0 +1,15 @@
+{
+  "post_search": {
+    "method": "POST",
+    "endpoint": {
+      "format": "/{index}/{type}/_search",
+      "parts": {
+        "index": "multipath",
+        "type": "multipath"
+      }
+    },
+    "params": {},
+    "body": "@search_body",
+    "response": "@empty_response"
+  }
+}

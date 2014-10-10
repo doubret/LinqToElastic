@@ -1,0 +1,79 @@
+{
+  "cluster_health": {
+    "method": "GET",
+    "endpoint": {
+      "format": "/_cluster/health/{index}",
+      "parts": {
+        "index": "multipath"
+      }
+    },
+    "params": {
+      "level": "enum",
+      "local": "boolean",
+      "master_timeout": "time",
+      "timeout": "time",
+      "wait_for_active_shards": "number",
+      "wait_for_nodes": "string",
+      "wait_for_relocating_shards": "number",
+      "wait_for_status": "enum"
+    },
+    "body": null,
+    "response": "@cluster_health"
+  },
+  "cluster_state": {
+    "method": "GET",
+    "endpoint": {
+      "format": "/_cluster/state/{metrics}/{index}",
+      "parts": {
+        "index": "multipath",
+        "metrics": "string"
+      }
+    },
+    "params": {
+      "local": "boolean",
+      "master_timeout": "time",
+      "flat_settings": "boolean"
+    },
+    "body": null,
+    "response": "@empty_response"
+  },
+  "cluster_stats": {
+    "method": "GET",
+    "endpoint": {
+      "format": "/_cluster/stats",
+      "parts": {}
+    },
+    "params": {
+      "flat_settings": "boolean"
+    },
+    "body": null,
+    "response": "@empty_response"
+  },
+  "cluster_stats_node": {
+    "method": "GET",
+    "endpoint": {
+      "format": "/_cluster/stats/nodes/{node_id}",
+      "parts": {
+        "node_id": "multipath"
+      }
+    },
+    "params": {
+      "flat_settings": "boolean"
+    },
+    "body": null,
+    "response": "@empty_response"
+  },
+  "cluster_pending_tasks": {
+    "method": "GET",
+    "endpoint": {
+      "format": "/_cluster/pending_tasks",
+      "parts": {}
+    },
+    "params": {
+      "local": "boolean",
+      "master_timeout": "time"
+    },
+    "body": null,
+    "response": "@pending_tasks_response"
+  }
+}

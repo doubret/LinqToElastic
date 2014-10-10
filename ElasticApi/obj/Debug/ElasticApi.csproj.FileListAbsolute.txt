@@ -1,0 +1,14 @@
+C:\Users\ce.breteche\Documents\GitHub\ElasticLINQ\Source\ElasticApi\bin\Debug\ElasticApi.dll
+C:\Users\ce.breteche\Documents\GitHub\ElasticLINQ\Source\ElasticApi\bin\Debug\ElasticApi.pdb
+C:\Users\ce.breteche\Documents\GitHub\ElasticLINQ\Source\ElasticApi\bin\Debug\Newtonsoft.Json.dll
+C:\Users\ce.breteche\Documents\GitHub\ElasticLINQ\Source\ElasticApi\bin\Debug\Newtonsoft.Json.xml
+C:\Users\ce.breteche\Documents\GitHub\ElasticLINQ\Source\ElasticApi\obj\Debug\ElasticApi.dll
+C:\Users\ce.breteche\Documents\GitHub\ElasticLINQ\Source\ElasticApi\obj\Debug\ElasticApi.pdb
+C:\Users\ce.breteche\Documents\GitHub\ElasticLINQ\Source\ElasticApi\obj\Debug\ElasticApi.csprojResolveAssemblyReference.cache
+E:\ElasticLINQ\Source\ElasticApi\bin\Debug\ElasticApi.dll
+E:\ElasticLINQ\Source\ElasticApi\bin\Debug\ElasticApi.pdb
+E:\ElasticLINQ\Source\ElasticApi\bin\Debug\Newtonsoft.Json.dll
+E:\ElasticLINQ\Source\ElasticApi\bin\Debug\Newtonsoft.Json.xml
+E:\ElasticLINQ\Source\ElasticApi\obj\Debug\ElasticApi.csprojResolveAssemblyReference.cache
+E:\ElasticLINQ\Source\ElasticApi\obj\Debug\ElasticApi.dll
+E:\ElasticLINQ\Source\ElasticApi\obj\Debug\ElasticApi.pdb

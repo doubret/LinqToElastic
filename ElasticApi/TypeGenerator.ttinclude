@@ -1,0 +1,156 @@
+﻿<#@ assembly name="System.Core" #>
+<#@ assembly name="Microsoft.CSharp"#>
+<#@ assembly name="/Volumes/EXCHANGE/ElasticLINQ/Source/packages/Newtonsoft.Json.6.0.5/lib/net40/Newtonsoft.Json.dll" #>
+<#@ import namespace="System.Dynamic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="Newtonsoft.Json" #>
+<#@ import namespace="Newtonsoft.Json.Linq" #>
+<#@ import namespace="Newtonsoft.Json.Converters" #>
+<#@ include file="StringUtils.ttinclude"#>
+<#+
+// MAC OS : /Volumes/EXCHANGE/ElasticLINQ/Source/packages/Newtonsoft.Json.6.0.5/lib/net40/Newtonsoft.Json.dll
+// WINDOWS : $(SolutionDir)/packages/Newtonsoft.Json.6.0.5/lib/net40/Newtonsoft.Json.dll
+private string GetTypeName(dynamic token, bool required)
+{
+	if (token is JValue)
+	{
+		string type = token;
+		
+		if (type.StartsWith("@") == true)
+		{
+			return PascalCase(type.Substring(1));
+		}
+		
+		return CSharpType(type, required);
+	}
+
+	if (token.type == "dictionary")
+	{
+		return string.Format("Dictionary<{0}, {1}>", token.key, GetTypeName(token.value, true));
+	}
+
+	if (token.type == "list")
+	{
+		return string.Format("List<{0}>", GetTypeName(token.item, true));
+	}
+
+	return "toto";
+}
+#>
+<#+
+private void GenerateEnum(dynamic token, string name)
+{
+#>
+	public enum <#=PascalCase(name)#>
+	{
+<#+
+	foreach(var value in token.Value)
+	{
+#>
+		<#=PascalCase((string)value)#>,
+<#+
+	}
+#>
+	}
+<#+
+}
+#>
+<#+
+private void GenerateClass(dynamic token, string name)
+{
+	string parent = null;
+
+	if (name.Contains(".") == true)
+	{
+		int dotPos = name.IndexOf(".");
+		
+		parent = PascalCase(name.Substring(0, dotPos));
+		name = name.Substring(dotPos + 1);
+	}
+#>
+	[Newtonsoft.Json.JsonObject("<#=name#>")]
+	public class <#=PascalCase(name) + (parent == null ? "" : parent + " : " + parent)#> 
+	{
+<#+
+	foreach(JProperty property in token.Value)
+	{
+#>
+		[Newtonsoft.Json.JsonProperty("<#=property.Name#>", NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+		public <#=GetTypeName(property.Value, true)#> <#=PascalCase(property.Name)#> { get; set; }
+<#+
+	}
+#>
+	}
+<#+
+}
+#>
+<#+
+private void GenerateType(dynamic token, string name)
+{
+	if (token.Value == null)
+	{
+		throw new Exception("token value should not be null");
+	}
+	
+	if (token.Name == null)
+	{
+		throw new Exception("token name should not be null");
+	}
+
+	if (token.Value is JObject)
+	{
+		GenerateClass(token, name);
+	}
+
+	if (token.Value is JArray)
+	{
+		GenerateEnum(token, name);
+	}
+}
+#>
+<#+
+internal class TypeMapping
+{
+	public readonly string Type;
+	public readonly string NullableType;
+
+	public TypeMapping(string type, string nullableType)
+    {
+		this.Type = type;
+		this.NullableType = nullableType;
+    }
+}
+
+IDictionary<string, TypeMapping> mappings = new Dictionary<string, TypeMapping>
+{
+    { "boolean", new TypeMapping("bool", "Nullable<bool>") },
+    { "number", new TypeMapping("long", "Nullable<long>") },
+    { "string", new TypeMapping("string", "string") },
+    { "enum", new TypeMapping("string", "string") },
+    { "list", new TypeMapping("IEnumerable<string>", "IEnumerable<string>") },
+    { "time", new TypeMapping("TimeSpan", "Nullable<TimeSpan>") },
+    { "duration", new TypeMapping("TimeSpan", "Nullable<TimeSpan>") },
+    { "multipath", new TypeMapping("string", "string") },
+    { "singlepath", new TypeMapping("string", "string") },
+    { "filter", new TypeMapping("string", "string") },
+    { "script", new TypeMapping("string", "string") },
+};
+
+public string CSharpType(string type, bool required)
+{
+	if (type.EndsWith("?") == true)
+    {
+		required = false;
+
+		type = type.Substring(0, type.Length - 1);
+    }
+
+	if (mappings.ContainsKey(type) == false)
+	{
+		throw new Exception("unknown type : " + type);
+	}
+	
+	return required == false ? mappings[type].NullableType :  mappings[type].Type;
+}
+#>

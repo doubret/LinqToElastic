@@ -1,0 +1,192 @@
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
+<#@ include file="FileUtils.ttinclude"#>
+<#@ include file="TypeGenerator.ttinclude"#>
+<#
+	var typeFiles = new [] { "Specs/types.json",  "Specs/query_types.json",  "Specs/filter_types.json" };
+	var apiFiles = new [] { "Specs/alias_api.json", "Specs/cluster_api.json", "Specs/document_api.json", "Specs/search_api.json" };
+#>
+//	API TYPES
+
+namespace ElasticApi.Types
+{
+	using System;
+	using System.Collections.Generic;
+
+<#
+	foreach(var type in LoadJsonFiles(typeFiles))
+    {
+    	GenerateType(type, type.Name);
+    }
+#>
+}
+
+//	API REQUESTS
+
+namespace ElasticApi.Requests
+{
+	using System;
+	using System.Collections.Generic;
+	using Newtonsoft.Json;
+	using Types;
+<#
+	foreach(var api in LoadJsonFiles(apiFiles))
+    {
+#>
+	public class <#=PascalCase(api.Name)#>Request
+	{
+<#
+		foreach(var part in api.Value.endpoint.parts)
+		{
+#>
+		[JsonIgnore]
+		public <#=GetTypeName(part.Value, true)#> <#=PascalCase(part.Name)#> { get; set; }
+<#
+        }
+#>
+<#
+		if (api.Value.@params != null)
+		{
+			foreach(var param in api.Value.@params)
+			{
+#>
+		[JsonIgnore]
+		public <#=GetTypeName(param.Value, false)#> <#=PascalCase(param.Name)#> { get; set; }
+<#
+			}
+        }
+#>
+<#
+		if (api.Value.body != null)
+		{
+#>
+		[JsonIgnore]
+		public <#=GetTypeName(api.Value.body, true)#> Body { get; set; }
+<#
+        }
+#>
+	}
+<#
+    }
+#>
+}
+
+//	API METHODS
+
+namespace ElasticApi
+{
+    using System;
+    using System.Collections.Generic;
+    using Types;
+    using Requests;
+
+	public static partial class Elastic
+	{
+<#
+	foreach(var api in LoadJsonFiles(apiFiles))
+    {
+		var method = api.Value.method.ToString().ToLower();
+		string returnType = GetTypeName(api.Value.response, true);
+#>
+		public static <#=returnType#> <#=PascalCase(api.Name)#>(IConnection connection, <#=PascalCase(api.Name)#>Request request)
+		{
+			IEnumerable<string> path = Routing.GetPath(request);
+			IDictionary<string, object> parameters = Routing.GetParameters(request);
+<#
+			if (method == "post" || method == "put")
+			{
+#>
+			return connection.<#=PascalCase(method)#><<#=returnType#>>(path, parameters, request.Body);
+<#
+			}
+			else
+            {
+#>
+			return connection.<#=PascalCase(method)#><<#=returnType#>>(path, parameters);
+<#
+			}
+#>
+		}
+<#
+    }
+#>
+	}
+}
+
+//	API ROUTING
+
+namespace ElasticApi
+{
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Requests;
+
+	public static partial class Routing
+	{
+<#
+	foreach(var property in LoadJsonFiles(apiFiles))
+    {
+		var api = PascalCase(property.Name);
+#>
+		private static readonly Func<<#=api#>Request, string>[] <#=api#>Paths = new Func<<#=api#>Request, string>[]
+		{
+<#
+		string path = property.Value.endpoint.format;
+		var segments = path.Split(new [] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+
+		foreach(var segment in segments)
+		{
+			if (segment.Contains("}") == true)
+            {
+#>
+			x => x.<#=PascalCase(segment.Substring(1, segment.Length - 2))#>,
+<#
+            }
+			else
+            {
+#>
+			x => "<#=segment#>",
+<#
+            }
+        }
+#>
+		};
+		public static IEnumerable<string> GetPath(<#=api#>Request request)
+		{
+			return <#=api#>Paths.Select(x => x(request));
+		}
+		public static IDictionary<string, object> GetParameters(<#=api#>Request request)
+		{
+			var parameters = new Dictionary<string, object>();
+<#
+		if (property.Value.@params != null)
+		{
+			foreach(var param in property.Value.@params)
+			{
+#>
+			AddParameter(parameters, "<#=param.Name#>", request.<#=PascalCase(param.Name)#>);
+<#
+			}
+		}
+#>
+			AddCommonParameters(parameters);
+
+			return parameters;
+		}
+<#
+    }
+#>
+        private static void AddParameter(IDictionary<string, object> parameters, string name, object value)
+        {
+			if (value != null)
+			{
+                parameters.Add(name, value);
+			}
+        }
+        private static void AddCommonParameters(IDictionary<string, object> parameters)
+        {
+            parameters.Add("pretty", true);
+            parameters.Add("human", false);
+        }
+	}
+}

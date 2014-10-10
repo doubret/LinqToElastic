@@ -1,0 +1,8 @@
+﻿<#@ assembly name="System.Core" #>
+<#@ import namespace="System.IO" #>
+<#+
+public IEnumerable<dynamic> LoadJsonFiles(params string[] files)
+{
+	return files.Select(x => (dynamic) JsonConvert.DeserializeObject(File.ReadAllText(this.Host.ResolvePath(x)))).SelectMany(x => (IEnumerable<dynamic>) x.Properties());
+}
+#>

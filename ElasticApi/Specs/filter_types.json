@@ -1,0 +1,42 @@
+{
+  "filter": {},
+  "filter.term": {
+    "term": "@term_definition"
+  },
+  "filter.terms": {
+    "terms": "@terms_definition"
+  },
+  "filter.and": {
+    "and": {
+      "type": "list",
+      "item": "@filter"
+    }
+  },
+  "filter.or": {
+    "or": {
+      "type": "list",
+      "item": "@filter"
+    }
+  },
+  "filter.not": {
+    "not": "@filter"
+  },
+  "filter.range": {
+    "range": "@range_definition"
+  },
+  "filter.prefix": {
+    "prefix": "@prefix_definition"
+  },
+  "exists_definition": {
+    "field": "string"
+  },
+  "filter.exists": {
+    "exists": "@exists_definition"
+  },
+  "missing_definition": {
+    "field": "string"
+  },
+  "filter.missing": {
+    "missing": "@missing_definition"
+  }
+}

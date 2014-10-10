@@ -1,0 +1,73 @@
+{
+  "get_alias": {
+    "method": "GET",
+    "endpoint": {
+      "format": "/{index}/_alias/{alias}",
+      "parts": {
+        "index": "multipath",
+        "alias": "multipath"
+      }
+    },
+    "params": {
+      "ignore_unavailable": "boolean"
+    },
+    "body": null,
+    "response": {
+      "type": "dictionary",
+      "key": "string",
+      "value": "@index_aliases"
+    }
+  },
+  "alias_exists": {
+    "method": "HEAD",
+    "endpoint": {
+      "format": "/{index}/_alias/{alias}",
+      "parts": {
+        "index": "multipath",
+        "alias": "multipath"
+      }
+    },
+    "params": null,
+    "body": null,
+    "response": "@empty_response"
+  },
+  "put_alias": {
+    "method": "PUT",
+    "endpoint": {
+      "format": "/{index}/_alias/{alias}",
+      "parts": {
+        "index": "multipath",
+        "alias": "singlepath"
+      }
+    },
+    "params": null,
+    "body": "@create_alias_body",
+    "response": "@acknowledged_response"
+  },
+  "post_alias": {
+    "method": "POST",
+    "endpoint": {
+      "format": "/{index}/_alias/{alias}",
+      "parts": {
+        "index": "multipath",
+        "alias": "string"
+      }
+    },
+    "params": null,
+    "body": "@create_alias_body",
+    "response": "@acknowledged_response"
+  },
+  "delete_alias": {
+    "method": "DELETE",
+    "endpoint": {
+      "format": "/{index}/_alias/{alias}",
+      "parts": {
+        "index": "multipath",
+        "alias": "multipath"
+      }
+    },
+    "params": null,
+    "body": null,
+    "response": "@acknowledged_response"
+  }
+}

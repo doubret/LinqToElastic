@@ -1,0 +1,32 @@
+﻿<#@ assembly name="System.Core" #>
+<#+
+public static string PascalCase(string raw)
+{
+	string temp = string.Empty;
+
+	foreach(var c in raw)
+	{
+		if (char.IsUpper(c))
+		{
+			temp += "_";
+		}
+
+		temp += c;
+	}
+
+	return System.Globalization.CultureInfo.InvariantCulture.TextInfo.ToTitleCase(temp.Replace("_", " ")).Replace(" ", "");
+}
+#>
+<#+
+public static string CamelCase(string raw)
+{
+	if (string.IsNullOrEmpty(raw))
+	{
+		return raw;
+	}
+
+	raw = PascalCase(raw);
+
+	return char.ToLowerInvariant(raw[0]) + raw.Substring(1);
+}
+#>

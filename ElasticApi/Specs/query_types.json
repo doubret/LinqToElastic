@@ -1,0 +1,25 @@
+{
+  "query": {},
+  "match_all_definition": {
+    "boost": "number"
+  },
+  "query.match_all": {
+    "match_all": "@match_all_definition"
+  },
+  "query.term": {
+    "term": "@term_definition"
+  },
+  "query.terms": {
+    "terms": "@terms_definition"
+  },
+  "filtered_definition": {
+    "query": "@filtered_query",
+    "filter": "@filter"
+  },
+  "query.filtered": {
+    "filtered": "@filtered_definition"
+  },
+  "query.bool": {
+    "bool": "@bool_definition"
+  }
+}

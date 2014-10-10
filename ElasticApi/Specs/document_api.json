@@ -1,0 +1,145 @@
+{
+  "get_document": {
+    "method": "GET",
+    "endpoint": {
+      "format": "/{index}/{type}/{id}",
+      "parts": {
+        "id": "string",
+        "index": "string",
+        "type": "string"
+      }
+    },
+    "params": {
+      "fields": {
+        "type": "list",
+        "item": "string"
+      },
+      "parent": "string",
+      "preference": "string",
+      "realtime": "boolean",
+      "refresh": "boolean",
+      "routing": "string",
+      "_source": {
+        "type": "list",
+        "item": "string"
+      },
+      "_source_exclude": {
+        "type": "list",
+        "item": "string"
+      },
+      "_source_include": {
+        "type": "list",
+        "item": "string"
+      },
+      "version": "number",
+      "version_type": "enum"
+    },
+    "body": null,
+    "response": "@get_document_response"
+  },
+  "put_document": {
+    "method": "PUT",
+    "endpoint": {
+      "format": "/{index}/{type}/{id}",
+      "parts": {
+        "id": "string",
+        "index": "string",
+        "type": "string"
+      }
+    },
+    "params": {
+      "consistency": "enum",
+      "op_type": "enum",
+      "parent": "string",
+      "refresh": "boolean",
+      "replication": "enum",
+      "routing": "string",
+      "timeout": "time",
+      "timestamp": "time",
+      "ttl": "duration",
+      "version": "number",
+      "version_type": "enum"
+    },
+    "body": "@object",
+    "response": "@index_document_response"
+  },
+  "post_document": {
+    "method": "POST",
+    "endpoint": {
+      "format": "/{index}/{type}",
+      "parts": {
+        "index": "string",
+        "type": "string"
+      }
+    },
+    "params": {
+      "consistency": "enum",
+      "op_type": "enum",
+      "parent": "string",
+      "refresh": "boolean",
+      "replication": "enum",
+      "routing": "string",
+      "timeout": "time",
+      "timestamp": "time",
+      "ttl": "duration",
+      "version": "number",
+      "version_type": "enum"
+    },
+    "body": "@object",
+    "response": "@index_document_response"
+  },
+  "delete_document": {
+    "method": "DELETE",
+    "endpoint": {
+      "format": "/{index}/{type}/{id}",
+      "parts": {
+        "id": "string",
+        "index": "string",
+        "type": "string"
+      }
+    },
+    "params": {
+      "consistency": "enum",
+      "parent": "string",
+      "refresh": "boolean",
+      "replication": "enum",
+      "routing": "string",
+      "timeout": "time",
+      "version": "number",
+      "version_type": "enum"
+    },
+    "body": null,
+    "response": "@delete_document_response"
+  },
+  "update_document": {
+    "method": "POST",
+    "endpoint": {
+      "format": "/{index}/{type}/{id}/_update",
+      "parts": {
+        "id": "string",
+        "index": "string",
+        "type": "string"
+      }
+    },
+    "params": {
+      "consistency": "enum",
+      "fields": "list",
+      "lang": "string",
+      "parent": "string",
+      "refresh": "boolean",
+      "replication": "enum",
+      "retry_on_conflict": "number",
+      "routing": "string",
+      "script": "script",
+      "script_id": "number",
+      "scripted_upsert": "boolean",
+      "timeout": "time",
+      "timestamp": "time",
+      "ttl": "duration",
+      "version": "number",
+      "version_type": "enum"
+    },
+    "body": "@update_document_body",
+    "response": "@empty_response"
+  }
+}
